@@ -1,15 +1,16 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import Instascan from 'instascan';
 
-class Camera extends Component {
+class Camera extends PureComponent {
   componentDidMount() {
-    let scanner = new Instascan.Scanner({ video: this.videoRef });
-    scanner.addListener('scan', function (content) {
+    this.scanner = new Instascan.Scanner({ video: this.videoRef });
+
+    this.scanner.addListener('scan', function (content) {
       console.log(content);
     });
     Instascan.Camera.getCameras().then(function (cameras) {
       if (cameras.length > 0) {
-        scanner.start(cameras[0]);
+        this.scanner.start(cameras[0]);
       } else {
         console.error('No cameras found.');
       }
@@ -18,9 +19,9 @@ class Camera extends Component {
     });
   }
 
-  // componentWillUnmount() {
-  //   scanner.removeListener();
-  // }
+  componentWillUnmount() {
+    this.scanner = null;
+  }
 
   render() {
     return (
